@@ -1,0 +1,20 @@
+@baseUrl = https://geo.api.gouv.fr
+@regionName = Normandie
+@regionCode = 28
+@departementCode = 14
+
+# 1. Recherche une région par nom (autocomplete)
+GET {{baseUrl}}/regions?nom={{regionName}}
+Accept: application/json
+
+###
+
+# 2. Liste des départements pour une région
+GET {{baseUrl}}/regions/{{regionCode}}/departements
+Accept: application/json
+
+###
+
+# 3. Liste des communes pour un département
+GET {{baseUrl}}/departements/{{departementCode}}/communes
+Accept: application/json

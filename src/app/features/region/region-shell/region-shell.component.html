@@ -1,0 +1,3 @@
+<mat-toolbar>{{ 'app.title' | translate }}</mat-toolbar>
+<app-region-search (regionSelected)="regionSelected.set($event)" />
+<app-departement-list [data]="departements" />
