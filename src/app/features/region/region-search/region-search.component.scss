@@ -1,0 +1,17 @@
+.form {
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.region-form {
+    min-width: 20rem;
+}
+
+.disabled-option {
+    cursor: default;
+    pointer-events: none;
+    font-style: italic;
+    background-color: transparent !important;
+}
+

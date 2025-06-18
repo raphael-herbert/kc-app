@@ -1,0 +1,15 @@
+.card-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.departement-card {
+  text-align: center;
+}
+
+a {
+  text-decoration: none !important;
+  color: black !important;
+}
