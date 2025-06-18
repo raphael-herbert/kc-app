@@ -4,8 +4,12 @@
     "searchRegion": "Rechercher une région",
     "loading": "Chargement...",
     "errorLoading": "Erreur lors du chargement.",
+    "errorHttp": "Une erreur est survenue.",
     "noData": "Aucune région trouvée.",
     "notFound": "404 - Page non trouvée",
-    "return": "Retour"
+    "return": "Retour",
+    "nomCommune": "Nom",
+    "codeCommune": "Code",
+    "populationCommune": "Population"
   }
 }

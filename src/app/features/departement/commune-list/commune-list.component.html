@@ -1,1 +1,24 @@
-<p>commune-list works!</p>
+<div class="table-container">
+  <table mat-table [dataSource]="dataSource()">
+    <ng-container matColumnDef="nom">
+      <th mat-header-cell *matHeaderCellDef>{{ 'app.nomCommune' | translate }}</th>
+      <td mat-cell *matCellDef="let commune">{{ commune.nom }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef>{{ 'app.codeCommune' | translate }}</th>
+      <td mat-cell *matCellDef="let commune">{{ commune.code }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="population">
+      <th mat-header-cell *matHeaderCellDef>{{ 'app.populationCommune' | translate }}</th>
+      <td mat-cell *matCellDef="let commune">{{ commune.population }}</td>
+    </ng-container>
+
+    <tr mat-header-row sticky *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>  
+</div>
+<div>
+    <mat-paginator [pageSizeOptions]="[50]" showFirstLastButtons />
+</div>

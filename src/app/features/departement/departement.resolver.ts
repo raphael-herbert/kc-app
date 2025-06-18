@@ -5,7 +5,7 @@ import { ResolveFn, Router } from '@angular/router';
 import { Commune } from '../../core/models/commune.model';
 import { GeoService } from '../../core/services/geo.service';
 
-export const departementResolver: ResolveFn<Commune[]> = (route) => {
+export const communesResolver: ResolveFn<Commune[]> = (route) => {
   const router = inject(Router);
   const geoService = inject(GeoService);
   const code = route.paramMap.get('code') ?? '';
