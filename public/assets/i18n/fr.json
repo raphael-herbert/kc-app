@@ -2,6 +2,10 @@
   "app": {
     "title": "KC App",
     "searchRegion": "Rechercher une région",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "errorLoading": "Erreur lors du chargement.",
+    "noData": "Aucune région trouvée.",
+    "notFound": "404 - Page non trouvée",
+    "return": "Retour"
   }
 }

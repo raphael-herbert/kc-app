@@ -1,14 +1,19 @@
 <form class="form">
-  <mat-form-field>
+  <mat-form-field class="region-form">
     <mat-label>{{ 'app.searchRegion' | translate }}</mat-label>
     <input type="text" matInput [formControl]="regionForm" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete">
-      @if (suggestionsReq$ | async; as suggestionsReq) {
-        @if (suggestionsReq.loading) {
-          {{ 'app.loading' | translate }}
-        } @else if (suggestionsReq.value) {
-          @for (suggestion of suggestionsReq.value; track $index) {
-            <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">{{ suggestion.nom }}</mat-option>
+      @if (vm$ | async; as vm) {
+        @if (vm.loading) {
+          <mat-option disabled class="disabled-option">{{ 'app.loading' | translate }}</mat-option>
+        } @else {
+          @if (vm.noData) {
+            <mat-option disabled class="disabled-option">{{ 'app.noData' | translate }}</mat-option>
+          }
+          @for (suggestion of vm.req.value; track suggestion.code) {
+            <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">
+              {{ suggestion.nom }}
+            </mat-option>
           }
         }
       }

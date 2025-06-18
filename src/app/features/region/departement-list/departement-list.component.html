@@ -1,1 +1,11 @@
-<p>departement-list works!</p>
+<div class="card-container">
+  @for (departement of data(); track departement.code) {
+    <a [routerLink]="['departement', departement.code]">
+      <mat-card class="departement-card" appearance="outlined">
+        <mat-card-content>
+          {{ departement.nom }}
+        </mat-card-content>
+      </mat-card>
+    </a>
+  }
+</div>

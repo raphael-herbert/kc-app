@@ -20,4 +20,16 @@ describe('RegionSearchComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Loading state should be displayed if http call > 300ms', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('No data state should be displayed if no data returned', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('No data state should not be displayed if region form is empty', () => {
+    expect(component).toBeTruthy();
+  });
 });

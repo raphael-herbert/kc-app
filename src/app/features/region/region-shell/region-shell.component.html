@@ -1,3 +1,13 @@
 <mat-toolbar>{{ 'app.title' | translate }}</mat-toolbar>
-<app-region-search (regionSelected)="regionSelected.set($event)" />
-<app-departement-list [data]="departements" />
+
+<app-region-search (regionSelected)="regionSelected.emit($event)" />
+
+@if (departementsReq$ | async; as departementsReq) {
+    @if (departementsReq.loading) {
+        <div class="spinner"><mat-spinner/></div>
+    } @else if (departementsReq.error) {
+        {{ 'app.errorLoading' | translate }}
+    } @else {
+        <app-departement-list [data]="departementsReq.value" />
+    }
+}

@@ -1,12 +1,16 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import {
+  combineLatest,
   debounceTime,
   distinctUntilChanged,
   map,
   Observable,
+  of,
+  shareReplay,
   startWith,
   switchMap,
+  timer,
 } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -23,12 +27,13 @@ import { Region } from '../../../core/models/region.model';
   standalone: true,
   imports: [
     AsyncPipe,
+    CommonModule,
     FormsModule,
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateModule
   ],
   templateUrl: './region-search.component.html',
   styleUrl: './region-search.component.scss'
@@ -38,16 +43,44 @@ export class RegionSearchComponent {
 
   public regionForm = new FormControl<string>('', { nonNullable: true });
 
-  public suggestionsReq$: Observable<HttpRequestState<Region[]>> =
-    this.regionForm.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((region) =>
-        this.geoService.searchRegions(region).pipe(
-          map((regions) => ({ value: regions, loading: false })),
-          startWith({ value: [], loading: true })
-        )
-      )
+  public suggestionsReq$: Observable<HttpRequestState<Region[]>> = this.regionForm.valueChanges.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    switchMap((region) => {
+      if (!region) {
+        return of({ value: [], loading: false });
+      }
+
+      return this.geoService.searchRegions(region).pipe(
+        map((regions) => ({ value: regions, loading: false })),
+        startWith({ value: [], loading: true })
+      );
+    }),
+    shareReplay(1)
+  );
+
+  /* avoid loading state flickering */
+  public delayedLoading$: Observable<boolean> = this.suggestionsReq$.pipe(
+    switchMap((req) => {
+      if (req.loading) {
+        return timer(300).pipe(map(() => true));
+      } else {
+        return of(false);
+      }
+    })
+  );
+
+  public noData$: Observable<boolean> = this.suggestionsReq$.pipe(
+    map((req) => 
+      !req.loading && 
+      req.value.length === 0 && 
+      this.regionForm.value.length > 0
+    )
+  );
+
+  /** view model */
+  public vm$ = combineLatest([this.suggestionsReq$, this.delayedLoading$, this.noData$]).pipe(
+    map(([req, loading, noData]) => ({ req, loading, noData }))
   );
 
   private geoService = inject(GeoService);

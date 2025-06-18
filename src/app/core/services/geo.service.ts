@@ -14,10 +14,8 @@ export class GeoService {
 
   private http = inject(HttpClient);
 
-  searchRegions(name: string): Observable<Region[]> {
-    return this.http.get<Region[]>(`${this.BASE_URL}/regions`, {
-      params: { nom: name },
-    });
+  searchRegions(name: string): Observable<Region[]> {    
+    return this.http.get<Region[]>(`${this.BASE_URL}/regions`, { params: { nom: name } });
   }
 
   getDepartementsByRegionCode(codeRegion: string): Observable<Departement[]> {
