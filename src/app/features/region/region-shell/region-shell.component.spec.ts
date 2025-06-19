@@ -1,4 +1,7 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { RegionShellComponent } from './region-shell.component';
 
@@ -8,7 +11,12 @@ describe('RegionShellComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegionShellComponent]
+      imports: [
+        BrowserAnimationsModule,
+        RegionShellComponent,
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ]
     })
     .compileComponents();
 
