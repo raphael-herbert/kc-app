@@ -1,9 +1,5 @@
-<div class="card-container">
+<div class="container">
   @for (departement of data(); track departement.code) {
-    <mat-card class="departement-card" appearance="outlined" (click)="navigateToCommunesList(departement)">
-      <mat-card-content>
-        {{ departement.nom }}
-      </mat-card-content>
-    </mat-card>
+  <button mat-stroked-button (click)="navigateToCommunesList(departement)">{{ departement.nom }}</button>
   }
 </div>

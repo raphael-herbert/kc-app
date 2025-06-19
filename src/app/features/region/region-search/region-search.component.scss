@@ -15,3 +15,9 @@
     background-color: transparent !important;
 }
 
+mat-option ::ng-deep {
+    --mat-option-selected-state-layer-color: var(--mat-option-focus-state-layer-color); 
+    mat-pseudo-checkbox {
+        display: none;
+    }
+}

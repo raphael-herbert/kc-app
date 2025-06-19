@@ -46,24 +46,25 @@ import { Region } from '../../../core/models/region.model';
 })
 export class RegionSearchComponent implements AfterViewInit {
 
+  @Output() public regionSelected = new EventEmitter<string>();
+
   @ViewChild('regionInput') regionInput!: ElementRef<HTMLInputElement>;
 
   public ngAfterViewInit(): void {
     this.regionInput.nativeElement.focus();
   }
 
-  @Output() public regionSelected = new EventEmitter<string>();
   
   public regionForm = new FormControl<string>('', { nonNullable: true });
 
   public suggestionsReq$: Observable<HttpRequestState<Region[]>> = this.regionForm.valueChanges.pipe(
+    debounceTime(300),
     distinctUntilChanged(),
     switchMap((region) => {
       if (!region) {
         return of({ value: [], loading: false });
       }
       return of(region).pipe(
-        debounceTime(300),
         switchMap((debouncedRegion) =>
           this.geoService.searchRegions(debouncedRegion).pipe(
             map((regions) => ({ value: regions, loading: false })),

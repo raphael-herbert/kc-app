@@ -3,6 +3,7 @@
 html,
 body {
   height: 100%;
+  background-color: var(--mat-toolbar-container-background-color, var(--mat-app-surface));
 }
 
 body {

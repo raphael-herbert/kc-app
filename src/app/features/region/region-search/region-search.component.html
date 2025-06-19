@@ -2,12 +2,11 @@
   <mat-form-field class="region-form">
     <mat-label>{{ 'app.searchRegion' | translate }}</mat-label>
     <input #regionInput type="text" matInput [formControl]="regionForm" [matAutocomplete]="auto">
-    <!-- T0D0: update Angular v19/20
     @if (regionForm.value) {
-      <button matSuffix matIconButton aria-label="Clear" (click)="regionForm.setValue('')">
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="regionForm.setValue('')">
         <mat-icon>close</mat-icon>
       </button>
-    } -->
+    }
     <mat-autocomplete #auto="matAutocomplete">
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
@@ -19,10 +18,12 @@
           @if (vm.req.error) {
             <mat-option disabled class="disabled-option">{{ 'app.errorHttp' | translate }}</mat-option>
           }
-          @for (suggestion of vm.req.value; track suggestion.code) {
-            <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">
-              {{ suggestion.nom }}
-            </mat-option>
+          @if (regionForm.value) {
+            @for (suggestion of vm.req.value; track suggestion.code) {
+              <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">
+                {{ suggestion.nom }}
+              </mat-option>
+            }
           }
         }
       }
