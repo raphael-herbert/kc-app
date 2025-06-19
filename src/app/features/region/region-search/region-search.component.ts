@@ -57,24 +57,20 @@ export class RegionSearchComponent  {
       if (!region) {
         return of({ value: [], loading: false });
       }
-      return of(region).pipe(
-        switchMap((debouncedRegion) =>
-          this.geoService.searchRegions(debouncedRegion).pipe(
-            map((regions) => ({ value: regions, loading: false })),
-            catchError((err: HttpErrorResponse) => of({ value: [], loading: false, error: err })),
-            startWith({ value: [], loading: true }),
-          )
-        )
+      return this.geoService.searchRegions(region).pipe(
+        map((regions) => ({ value: regions, loading: false })),
+        catchError((err: HttpErrorResponse) => of({ value: [], loading: false, error: err })),
+        startWith({ value: [], loading: true })
       );
     }),
-    scan((acc: HttpRequestState<Region[]>, curr: HttpRequestState<Region[]>) => {
-      if (curr.loading && !acc.loading) {
-        return {... acc, loading: true };
+    scan((prev: HttpRequestState<Region[]>, curr: HttpRequestState<Region[]>) => {
+      if (curr.loading && !prev.loading) {
+        return {... prev, loading: true };
       }
-      acc.value.length = 0;
-      acc.value.push(...curr.value);
+      prev.value.length = 0;
+      prev.value.push(...curr.value);
       return {
-        ...acc,
+        ...prev,
         loading: curr.loading,
         error: curr.error
       };
