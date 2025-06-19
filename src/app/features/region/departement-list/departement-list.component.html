@@ -1,11 +1,5 @@
-<div class="card-container">
+<div class="container">
   @for (departement of data(); track departement.code) {
-    <a [routerLink]="['departement', departement.code]">
-      <mat-card class="departement-card" appearance="outlined">
-        <mat-card-content>
-          {{ departement.nom }}
-        </mat-card-content>
-      </mat-card>
-    </a>
+  <button mat-stroked-button (click)="navigateToCommunesList(departement)">{{ departement.nom }}</button>
   }
 </div>

@@ -1,6 +1,7 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import {
+  catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
@@ -13,8 +14,11 @@ import {
   timer,
 } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -30,7 +34,9 @@ import { Region } from '../../../core/models/region.model';
     CommonModule,
     FormsModule,
     MatAutocompleteModule,
+    MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     ReactiveFormsModule,
     TranslateModule
@@ -38,9 +44,17 @@ import { Region } from '../../../core/models/region.model';
   templateUrl: './region-search.component.html',
   styleUrl: './region-search.component.scss'
 })
-export class RegionSearchComponent {
+export class RegionSearchComponent implements AfterViewInit {
+
   @Output() public regionSelected = new EventEmitter<string>();
 
+  @ViewChild('regionInput') regionInput!: ElementRef<HTMLInputElement>;
+
+  public ngAfterViewInit(): void {
+    this.regionInput.nativeElement.focus();
+  }
+
+  
   public regionForm = new FormControl<string>('', { nonNullable: true });
 
   public suggestionsReq$: Observable<HttpRequestState<Region[]>> = this.regionForm.valueChanges.pipe(
@@ -50,16 +64,22 @@ export class RegionSearchComponent {
       if (!region) {
         return of({ value: [], loading: false });
       }
-
-      return this.geoService.searchRegions(region).pipe(
-        map((regions) => ({ value: regions, loading: false })),
-        startWith({ value: [], loading: true })
+      return of(region).pipe(
+        switchMap((debouncedRegion) =>
+          this.geoService.searchRegions(debouncedRegion).pipe(
+            map((regions) => ({ value: regions, loading: false })),
+            startWith({ value: [], loading: true }),
+            catchError((err: HttpErrorResponse) =>
+              of({ value: [], loading: false, error: err })
+            )
+          )
+        )
       );
     }),
     shareReplay(1)
   );
 
-  /* avoid loading state flickering */
+  /* avoid loading state flickering for fast networks */
   public delayedLoading$: Observable<boolean> = this.suggestionsReq$.pipe(
     switchMap((req) => {
       if (req.loading) {
@@ -72,7 +92,8 @@ export class RegionSearchComponent {
 
   public noData$: Observable<boolean> = this.suggestionsReq$.pipe(
     map((req) => 
-      !req.loading && 
+      !req.loading &&
+      !req.error &&
       req.value.length === 0 && 
       this.regionForm.value.length > 0
     )

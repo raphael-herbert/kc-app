@@ -1,7 +1,12 @@
 <form class="form">
   <mat-form-field class="region-form">
     <mat-label>{{ 'app.searchRegion' | translate }}</mat-label>
-    <input type="text" matInput [formControl]="regionForm" [matAutocomplete]="auto">
+    <input #regionInput type="text" matInput [formControl]="regionForm" [matAutocomplete]="auto">
+    @if (regionForm.value) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="regionForm.setValue('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
     <mat-autocomplete #auto="matAutocomplete">
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
@@ -10,10 +15,15 @@
           @if (vm.noData) {
             <mat-option disabled class="disabled-option">{{ 'app.noData' | translate }}</mat-option>
           }
-          @for (suggestion of vm.req.value; track suggestion.code) {
-            <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">
-              {{ suggestion.nom }}
-            </mat-option>
+          @if (vm.req.error) {
+            <mat-option disabled class="disabled-option">{{ 'app.errorHttp' | translate }}</mat-option>
+          }
+          @if (regionForm.value) {
+            @for (suggestion of vm.req.value; track suggestion.code) {
+              <mat-option [value]="suggestion.nom" (onSelectionChange)="regionSelected.next(suggestion.code)">
+                {{ suggestion.nom }}
+              </mat-option>
+            }
           }
         }
       }

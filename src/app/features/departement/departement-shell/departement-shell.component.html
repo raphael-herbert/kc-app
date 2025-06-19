@@ -1,1 +1,8 @@
-<p>departement-shell works!</p>
+<mat-toolbar class="shadow">
+    <button mat-icon-button class="back" [routerLink]="'/'">
+        <mat-icon>keyboard_backspace</mat-icon>
+    </button>
+    {{ departement.codeRegion }} - {{ departement.nom }}
+</mat-toolbar>
+
+<app-commune-list [data]="communes$ | async" />
