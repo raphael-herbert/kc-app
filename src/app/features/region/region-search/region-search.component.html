@@ -3,7 +3,7 @@
     <mat-label>{{ 'app.searchRegion' | translate }}</mat-label>
     <input #regionInput type="text" matInput [formControl]="regionForm" [matAutocomplete]="auto">
     @if (regionForm.value) {
-      <button matSuffix mat-icon-button aria-label="Clear" (click)="regionForm.setValue('')">
+      <button type="button" matSuffix mat-icon-button aria-label="Clear" (click)="regionForm.setValue('')">
         <mat-icon>close</mat-icon>
       </button>
     }
