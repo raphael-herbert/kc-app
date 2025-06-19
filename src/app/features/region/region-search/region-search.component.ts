@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import {
   catchError,
   combineLatest,
@@ -8,6 +8,7 @@ import {
   map,
   Observable,
   of,
+  scan,
   shareReplay,
   startWith,
   switchMap,
@@ -44,17 +45,9 @@ import { Region } from '../../../core/models/region.model';
   templateUrl: './region-search.component.html',
   styleUrl: './region-search.component.scss'
 })
-export class RegionSearchComponent implements AfterViewInit {
-
+export class RegionSearchComponent  {
   @Output() public regionSelected = new EventEmitter<string>();
 
-  @ViewChild('regionInput') regionInput!: ElementRef<HTMLInputElement>;
-
-  public ngAfterViewInit(): void {
-    this.regionInput.nativeElement.focus();
-  }
-
-  
   public regionForm = new FormControl<string>('', { nonNullable: true });
 
   public suggestionsReq$: Observable<HttpRequestState<Region[]>> = this.regionForm.valueChanges.pipe(
@@ -68,13 +61,23 @@ export class RegionSearchComponent implements AfterViewInit {
         switchMap((debouncedRegion) =>
           this.geoService.searchRegions(debouncedRegion).pipe(
             map((regions) => ({ value: regions, loading: false })),
+            catchError((err: HttpErrorResponse) => of({ value: [], loading: false, error: err })),
             startWith({ value: [], loading: true }),
-            catchError((err: HttpErrorResponse) =>
-              of({ value: [], loading: false, error: err })
-            )
           )
         )
       );
+    }),
+    scan((acc: HttpRequestState<Region[]>, curr: HttpRequestState<Region[]>) => {
+      if (curr.loading && !acc.loading) {
+        return {... acc, loading: true };
+      }
+      acc.value.length = 0;
+      acc.value.push(...curr.value);
+      return {
+        ...acc,
+        loading: curr.loading,
+        error: curr.error
+      };
     }),
     shareReplay(1)
   );

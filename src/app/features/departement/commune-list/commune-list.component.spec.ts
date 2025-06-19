@@ -1,4 +1,6 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { CommuneListComponent } from './commune-list.component';
 
@@ -8,12 +10,18 @@ describe('CommuneListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommuneListComponent]
+      imports: [
+        CommuneListComponent,
+        BrowserAnimationsModule,
+        TranslateModule.forRoot()
+      ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(CommuneListComponent);
-    component = fixture.componentInstance;
+    component = fixture.componentInstance
+    const componentRef = fixture.componentRef
+    componentRef.setInput('data', []);
     fixture.detectChanges();
   });
 
