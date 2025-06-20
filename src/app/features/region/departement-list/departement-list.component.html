@@ -1,5 +1,5 @@
 <div class="container">
   @for (departement of data(); track departement.code) {
-  <button mat-stroked-button (click)="navigateToCommunesList(departement)">{{ departement.nom }}</button>
+  <button mat-flat-button (click)="navigateToCommunesList(departement)">{{ departement.nom }}</button>
   }
 </div>

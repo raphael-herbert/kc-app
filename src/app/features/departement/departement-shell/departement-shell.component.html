@@ -1,8 +1,8 @@
-<mat-toolbar class="shadow">
+<mat-toolbar>
     <button mat-icon-button class="back" [routerLink]="'/'">
         <mat-icon>keyboard_backspace</mat-icon>
     </button>
-    {{ departement.codeRegion }} - {{ departement.nom }}
+    <h2>{{ departement.codeRegion }} - {{ departement.nom }}</h2>
 </mat-toolbar>
 
 <app-commune-list [data]="communes$ | async" />

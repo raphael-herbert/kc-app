@@ -1,4 +1,6 @@
-<mat-toolbar>{{ 'app.title' | translate }}</mat-toolbar>
+<mat-toolbar>
+    <img src="/logo.svg" alt="Logo" height="30">
+</mat-toolbar>
 
 <app-region-search (regionSelected)="regionSelected.emit($event)" />
 
